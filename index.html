@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Food Delivery App</title>
+    <title>One-Way Express App</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,7 +13,7 @@
         .container {
             max-width: 500px;
             margin: auto;
-            background: white;
+            background: rgb(50, 243, 6);
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 10px lightgray;
@@ -20,33 +21,37 @@
 
         h1 {
             text-align: center;
-            color: #d35400;
+            color: #1507e4;
         }
 
         label {
             display: block;
             margin-top: 10px;
+            font-weight: bold;
         }
 
-        input, select {
+        input,
+        select {
             width: 100%;
             padding: 8px;
             margin-top: 5px;
+            box-sizing: border-box;
         }
 
         button {
             width: 100%;
             margin-top: 15px;
             padding: 10px;
-            background: #d35400;
-            color: white;
+            background: #dfff0c;
+            color: black;
             border: none;
             cursor: pointer;
             font-size: 16px;
+            font-weight: bold;
         }
 
         button:hover {
-            background: #e67e22;
+            background: #05f1f5;
         }
 
         #result {
@@ -56,13 +61,18 @@
         }
     </style>
 </head>
+
 <body>
 
 <div class="container">
-    <h1>Food Delivery</h1>
+
+    <h1>One-Way Express App</h1>
 
     <label>Customer Name</label>
     <input type="text" id="customerName">
+
+    <label>Email Address</label>
+    <input type="email" id="emailAddress">
 
     <label>Delivery Address</label>
     <input type="text" id="address">
@@ -79,16 +89,32 @@
     <button onclick="calculateTotal()">Place Order</button>
 
     <div id="result"></div>
+
 </div>
 
-<script>
-function calculateTotal() {
-    let name = document.getElementById("customerName").value;
-    let address = document.getElementById("address").value;
-    let foodAmount = parseFloat(document.getElementById("foodAmount").value);
-    let deliveryFee = parseFloat(document.getElementById("deliveryArea").value);
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
-    if (!name || !address || isNaN(foodAmount)) {
+<script>
+emailjs.init("YOUR_PUBLIC_KEY");
+
+function calculateTotal() {
+
+    let name = document.getElementById("customerName").value.trim();
+    let emailAddress = document.getElementById("emailAddress").value.trim();
+    let address = document.getElementById("address").value.trim();
+
+    let foodAmount =
+        parseFloat(document.getElementById("foodAmount").value);
+
+    let deliveryFee =
+        parseFloat(document.getElementById("deliveryArea").value);
+
+    if (
+        !name ||
+        !emailAddress ||
+        !address ||
+        isNaN(foodAmount)
+    ) {
         document.getElementById("result").innerHTML =
             "Please fill out all fields.";
         return;
@@ -96,12 +122,38 @@ function calculateTotal() {
 
     let total = foodAmount + deliveryFee;
 
+    emailjs.send(
+        "YOUR_SERVICE_ID",
+        "YOUR_TEMPLATE_ID",
+        {
+            customer_name: name,
+            customer_email: emailAddress,
+            delivery_address: address,
+            order_amount: foodAmount.toFixed(2),
+            delivery_fee: deliveryFee.toFixed(2),
+            total_cost: total.toFixed(2)
+        }
+    )
+    .then(function() {
+        console.log("Email sent successfully");
+    })
+    .catch(function(error) {
+        console.log("Email failed:", error);
+    });
+
     document.getElementById("result").innerHTML =
-        `Order Confirmed!<br>
+        `
+        Order Confirmed!<br><br>
+
         Customer: ${name}<br>
+        Email: ${emailAddress}<br>
         Address: ${address}<br>
+        Food Amount: $${foodAmount.toFixed(2)}<br>
         Delivery Fee: $${deliveryFee.toFixed(2)}<br>
-        Total Cost: $${total.toFixed(2)}`;
+        Total Cost: $${total.toFixed(2)}<br><br>
+
+        Confirmation email has been requested.
+        `;
 }
 </script>
 
