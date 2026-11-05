@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Food Delivery App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px lightgray;
+        }
+
+        h1 {
+            text-align: center;
+            color: #d35400;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            background: #d35400;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #e67e22;
+        }
+
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Food Delivery</h1>
+
+    <label>Customer Name</label>
+    <input type="text" id="customerName">
+
+    <label>Delivery Address</label>
+    <input type="text" id="address">
+
+    <label>Delivery Area</label>
+    <select id="deliveryArea">
+        <option value="10">In Town ($10)</option>
+        <option value="25">Oneida ($25)</option>
+    </select>
+
+    <label>Food Order Amount ($)</label>
+    <input type="number" id="foodAmount" min="0">
+
+    <button onclick="calculateTotal()">Place Order</button>
+
+    <div id="result"></div>
+</div>
+
+<script>
+function calculateTotal() {
+    let name = document.getElementById("customerName").value;
+    let address = document.getElementById("address").value;
+    let foodAmount = parseFloat(document.getElementById("foodAmount").value);
+    let deliveryFee = parseFloat(document.getElementById("deliveryArea").value);
+
+    if (!name || !address || isNaN(foodAmount)) {
+        document.getElementById("result").innerHTML =
+            "Please fill out all fields.";
+        return;
+    }
+
+    let total = foodAmount + deliveryFee;
+
+    document.getElementById("result").innerHTML =
+        `Order Confirmed!<br>
+        Customer: ${name}<br>
+        Address: ${address}<br>
+        Delivery Fee: $${deliveryFee.toFixed(2)}<br>
+        Total Cost: $${total.toFixed(2)}`;
+}
+</script>
+
+</body>
+</html>
